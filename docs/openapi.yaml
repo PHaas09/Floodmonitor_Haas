@@ -1,0 +1,594 @@
+openapi: 3.0.1
+info:
+  title: FloodMonitor REST API
+  description: "Messstationen, Messwerte, Warnungen und Statistik eines Hochwasser-Frü\
+    hwarnsystems. Antworten als JSON (Standard) oder XML über den Accept-Header."
+  version: v1
+servers:
+- url: http://localhost:8080
+  description: lokaler Server
+security:
+- basicAuth: []
+paths:
+  /api/v1/stations:
+    get:
+      tags:
+      - flood-monitor-controller
+      summary: "Alle Messstationen abrufen, optional gefiltert"
+      operationId: getStations
+      parameters:
+      - name: river
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: isActive
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: warningLevel
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationList"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/StationList"
+        "401":
+          description: Nicht angemeldet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Ungültiger Parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Station oder Messung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "406":
+          description: Format nicht unterstützt (nur JSON oder XML)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/stations/{stationId}:
+    get:
+      tags:
+      - flood-monitor-controller
+      summary: Einzelne Station abrufen
+      operationId: getStation
+      parameters:
+      - name: stationId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Station"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Station"
+        "401":
+          description: Nicht angemeldet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Ungültiger Parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Station oder Messung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "406":
+          description: Format nicht unterstützt (nur JSON oder XML)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/stations/{stationId}/statistics:
+    get:
+      tags:
+      - flood-monitor-controller
+      summary: Statistik der Messwerte abrufen
+      operationId: getStatistics
+      parameters:
+      - name: stationId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Statistics"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Statistics"
+        "401":
+          description: Nicht angemeldet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Ungültiger Parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Station oder Messung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "406":
+          description: Format nicht unterstützt (nur JSON oder XML)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/stations/{stationId}/measurements:
+    get:
+      tags:
+      - flood-monitor-controller
+      summary: Historische Messwerte abrufen (neueste zuerst)
+      operationId: getMeasurements
+      parameters:
+      - name: stationId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: warningLevel
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeasurementList"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/MeasurementList"
+        "401":
+          description: Nicht angemeldet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Ungültiger Parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Station oder Messung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "406":
+          description: Format nicht unterstützt (nur JSON oder XML)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/stations/{stationId}/measurements/latest:
+    get:
+      tags:
+      - flood-monitor-controller
+      summary: Aktuellsten Messwert abrufen
+      operationId: getLatest
+      parameters:
+      - name: stationId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Measurement"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Measurement"
+        "401":
+          description: Nicht angemeldet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Ungültiger Parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Station oder Messung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "406":
+          description: Format nicht unterstützt (nur JSON oder XML)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/v1/alerts:
+    get:
+      tags:
+      - flood-monitor-controller
+      summary: Aktuelle Warnungen abrufen
+      operationId: getAlerts
+      parameters:
+      - name: warningLevel
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: river
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertList"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AlertList"
+        "401":
+          description: Nicht angemeldet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Ungültiger Parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Station oder Messung nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "406":
+          description: Format nicht unterstützt (nur JSON oder XML)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+          format: int32
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+    Station:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        river:
+          type: string
+        location:
+          $ref: "#/components/schemas/Location"
+        normalWaterLevel:
+          type: number
+          format: double
+        warningWaterLevel:
+          type: number
+          format: double
+        criticalWaterLevel:
+          type: number
+          format: double
+        meanFlowRate:
+          type: number
+          format: double
+        status:
+          type: string
+          enum:
+          - ONLINE
+          - MAINTENANCE
+          - OFFLINE
+        currentWarningLevel:
+          type: string
+          enum:
+          - NORMAL
+          - WARNING
+          - CRITICAL
+          - UNKNOWN
+        isActive:
+          type: boolean
+    StationList:
+      type: object
+      properties:
+        stations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Station"
+        count:
+          type: integer
+          format: int32
+    Statistics:
+      type: object
+      properties:
+        stationId:
+          type: string
+        measurementCount:
+          type: integer
+          format: int32
+        minWaterLevel:
+          type: number
+          format: double
+        maxWaterLevel:
+          type: number
+          format: double
+        avgWaterLevel:
+          type: number
+          format: double
+        avgFlowRate:
+          type: number
+          format: double
+        totalRainfall:
+          type: number
+          format: double
+        warningCount:
+          type: integer
+          format: int32
+        criticalCount:
+          type: integer
+          format: int32
+    Measurement:
+      type: object
+      properties:
+        stationId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        waterLevel:
+          type: number
+          format: double
+        flowRate:
+          type: number
+          format: double
+        rainfall:
+          type: number
+          format: double
+        temperature:
+          type: number
+          format: double
+        batteryLevel:
+          type: integer
+          format: int32
+        status:
+          type: string
+          enum:
+          - ONLINE
+          - MAINTENANCE
+          - OFFLINE
+        warningLevel:
+          type: string
+          enum:
+          - NORMAL
+          - WARNING
+          - CRITICAL
+          - UNKNOWN
+    MeasurementList:
+      type: object
+      properties:
+        stationId:
+          type: string
+        measurements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Measurement"
+        count:
+          type: integer
+          format: int32
+    Alert:
+      type: object
+      properties:
+        stationId:
+          type: string
+        stationName:
+          type: string
+        river:
+          type: string
+        warningLevel:
+          type: string
+          enum:
+          - NORMAL
+          - WARNING
+          - CRITICAL
+          - UNKNOWN
+        waterLevel:
+          type: number
+          format: double
+        timestamp:
+          type: string
+          format: date-time
+    AlertList:
+      type: object
+      properties:
+        alerts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Alert"
+        count:
+          type: integer
+          format: int32
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: "HTTP Basic Login, Benutzer: viewer"
+      scheme: basic
