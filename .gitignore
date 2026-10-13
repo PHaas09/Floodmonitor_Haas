@@ -1,0 +1,24 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Eclipse / VS Code
+.classpath
+.project
+.settings/
+bin/
+.vscode/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# lokale Konfiguration mit echten Passwoertern niemals committen
+application-local.properties
+.env
