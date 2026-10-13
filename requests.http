@@ -1,0 +1,49 @@
+### Alle Stationen (JSON)
+GET http://localhost:8080/api/v1/stations
+Authorization: Basic viewer viewer123
+
+### Alle Stationen (XML)
+GET http://localhost:8080/api/v1/stations
+Authorization: Basic viewer viewer123
+Accept: application/xml
+
+### Filter
+GET http://localhost:8080/api/v1/stations?river=Donau&isActive=true
+Authorization: Basic viewer viewer123
+
+### Einzelne Station
+GET http://localhost:8080/api/v1/stations/ST-001
+Authorization: Basic viewer viewer123
+
+### Aktueller Messwert (XML)
+GET http://localhost:8080/api/v1/stations/ST-003/measurements/latest
+Authorization: Basic viewer viewer123
+Accept: application/xml
+
+### Historische Messwerte
+GET http://localhost:8080/api/v1/stations/ST-003/measurements?limit=10&warningLevel=NORMAL
+Authorization: Basic viewer viewer123
+
+### Statistik
+GET http://localhost:8080/api/v1/stations/ST-003/statistics
+Authorization: Basic viewer viewer123
+
+### Warnungen
+GET http://localhost:8080/api/v1/alerts
+Authorization: Basic viewer viewer123
+
+### Fehler: unbekannte Station (404)
+GET http://localhost:8080/api/v1/stations/ST-999
+Authorization: Basic viewer viewer123
+
+### Fehler: from nach to (400)
+GET http://localhost:8080/api/v1/stations/ST-001/measurements?from=2026-05-01T12:00:00Z&to=2026-05-01T08:00:00Z
+Authorization: Basic viewer viewer123
+
+### Fehler: Format nicht unterstuetzt (406)
+GET http://localhost:8080/api/v1/stations
+Authorization: Basic viewer viewer123
+Accept: text/csv
+
+### Fehler: ohne Login (401)
+GET http://localhost:8080/api/v1/stations

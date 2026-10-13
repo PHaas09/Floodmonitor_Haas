@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f2f5f8;
+    color: #222;
+}
+
+.box {
+    background: white;
+    border: 1px solid #ccd;
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+}
+
+form.box label {
+    margin-right: 15px;
+}
+
+.row {
+    display: flex;
+    gap: 15px;
+}
+
+.row .box {
+    flex: 1;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 5px;
+    text-align: left;
+}
+
+#error {
+    background: #fdd;
+    border: 1px solid #c00;
+    padding: 8px;
+}
+
+/* Farben der Warnstufen */
+.badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.NORMAL   { background: green; }
+.WARNING  { background: orange; }
+.CRITICAL { background: red; }
+.UNKNOWN  { background: gray; }
